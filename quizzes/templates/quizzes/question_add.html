@@ -1,0 +1,52 @@
+{% extends 'quizzes/base.html' %}
+
+{% block content%}
+
+<form method="post">
+    {% csrf_token %}
+    <h2>Question</h2>
+    {{  question_form.as_p }}
+
+    <h2>Answers</h2>
+    {{ answer_forms.management_form }}
+    
+    <div id="answers-container">
+        {% for form in answer_forms %}
+            <div class="answer-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-answer">Add answer</button>
+    <button type="submit" name="add_question">Add next question</button>
+    <button type="submit" name="save">Save test</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addAnswerButton = document.getElementById("add-answer");
+        const answerContainer = document.getElementById("answers-container");
+        let totalFormsInput = document.querySelector("#id_form-TOTAL_FORMS");
+        let formIndex = parseInt(totalFormsInput.value, 10);
+
+        addAnswerButton.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const newAnswerForm = `
+                <div class="answer-form">
+                    <p><label for="id_form-${formIndex}-text">Text:</label>
+                    <input type="text" name="form-${formIndex}-text" id="id_form-${formIndex}-text" maxlength="300"></p>
+                    <p><label for="id_form-${formIndex}-is_correct">Is correct:</label>
+                    <input type="checkbox" name="form-${formIndex}-is_correct" id="id_form-${formIndex}-is_correct"></p>
+                </div>
+            `;
+
+            answerContainer.insertAdjacentHTML("beforeend", newAnswerForm);
+            formIndex++;
+            totalFormsInput.value = formIndex;
+        });
+    });
+</script>
+
+{% endblock %}

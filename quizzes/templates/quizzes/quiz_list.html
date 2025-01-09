@@ -1,0 +1,18 @@
+{% extends 'quizzes/base.html' %}
+
+{% block nav %}
+<a href="{% url 'quiz_create' %}">Create new quiz</a>
+{% endblock %}
+
+{% block content %}
+
+<ul>
+    {% for quiz in quizzes %}
+        <li>
+            <a href="{% url 'quiz_solve' quiz.pk %}">{{ quiz.title }}</a> - {{ quiz.category.name }}
+            <button onclick="alert('Skopiowano link do testu');">Copy link</button>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'quizzes/base.html' %}
+
+{% block content %}
+<h1>{{ quiz.title }}</h1>
+<p>{{ quiz.description }}</p>
+
+<form method="post" action="{% url 'quiz_submit' quiz.pk %}">
+    {% csrf_token %}
+    {% for question in quiz.questions.all %}
+        <div class="question">
+            <h3>{{ forloop.counter }}. {{ question.text }}</h3>
+            {% if question.image %}
+                <img src="{{ question.image.url }}" alt="Question image">
+            {% endif %}
+
+            <div class="answers">
+                {% for answer in question.answers.all %}
+                    <div class="answer">
+                        <input type="checkbox" id="answer-{{ answer.id }}" name="question-{{ question.id }}" value="{{ answer.id }}">
+                        <label for="answer-{{ answer.id }}">{{ answer.text }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+    <button type="submit">Submit Quiz</button>
+</form>
+{% endblock %}
