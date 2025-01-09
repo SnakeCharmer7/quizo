@@ -10,7 +10,7 @@
         <div class="question">
             <h3>{{ forloop.counter }}. {{ question.text }}</h3>
             {% if question.image %}
-                <img src="{{ question.image.url }}" alt="Question image">
+                <img src="{{ question.image.url }}" alt="Question image" style="max-height: 200px; width: auto;">
             {% endif %}
 
             <div class="answers">
@@ -23,6 +23,6 @@
             </div>
         </div>
     {% endfor %}
-    <button type="submit">Submit Quiz</button>
+    <br><button type="submit">Submit Quiz</button>
 </form>
 {% endblock %}

@@ -2,14 +2,14 @@
 
 {% block content%}
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <h2>Question</h2>
     {{  question_form.as_p }}
 
     <h2>Answers</h2>
     {{ answer_forms.management_form }}
-    
+
     <div id="answers-container">
         {% for form in answer_forms %}
             <div class="answer-form">

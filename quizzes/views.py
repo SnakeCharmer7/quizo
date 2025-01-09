@@ -25,10 +25,8 @@ class QuizSolveView(LoginRequiredMixin, generic.DetailView):
     template_name = "quizzes/quiz_solve.html"
     context_object_name = "quiz"
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['questions'] = self.object.questions.all()
-    #     return context
+    def get_object(self, queryset=None):
+        return get_object_or_404(Quiz, unique_link=self.kwargs['unique_link'])
 
 
 class QuizResultView(View):
@@ -57,7 +55,7 @@ class QuizSubmitView(View):
         score = 0
         total_questions = quiz.questions.count()
 
-        for question in questions:      
+        for question in questions:
             user_answer_ids = request.POST.getlist(f'question-{question.id}')
             correct_answers = question.answers.filter(is_correct=True)
 
@@ -109,7 +107,7 @@ class QuestionAddView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
-        question_form = QuestionForm(request.POST)
+        question_form = QuestionForm(request.POST, request.FILES)
         AnswerFormSet = formset_factory(AnswerForm)
         answer_formset = AnswerFormSet(request.POST)
 
@@ -128,7 +126,7 @@ class QuestionAddView(LoginRequiredMixin, View):
             elif "save" in request.POST:
                 return redirect('quiz_list')
 
-        return render(request, 'quizzes/quiz_list.html', {
+        return render(request, 'quizzes/question_add.html', {
             'quiz': quiz,
             'question_form': question_form,
             'answer_forms': answer_formset,

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,12 +77,12 @@ WSGI_APPLICATION = 'quizo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'quizo',
-        'USER': 'postgres',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'SnakeCharmer7$default',
+        'USER': 'SnakeCharmer7',
         'PASSWORD': '3.14159265',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': 'SnakeCharmer7.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
 
@@ -131,3 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

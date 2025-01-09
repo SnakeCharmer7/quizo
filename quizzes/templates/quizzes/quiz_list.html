@@ -6,13 +6,21 @@
 
 {% block content %}
 
+<h3>Quizzes</h3>
 <ul>
     {% for quiz in quizzes %}
         <li>
-            <a href="{% url 'quiz_solve' quiz.pk %}">{{ quiz.title }}</a> - {{ quiz.category.name }}
-            <button onclick="alert('Skopiowano link do testu');">Copy link</button>
+            <a href="{% url 'quiz_solve' quiz.unique_link %}">{{ quiz.title }}</a> -
+            <button onclick="copyText('{{ quiz.unique_link }}')">Copy link</button>
         </li>
     {% endfor %}
 </ul>
+
+<script>
+    function copyText(link) {
+        navigator.clipboard.writeText("https://snakecharmer7.pythonanywhere.com/quiz/" + link);
+        alert("Link copied to clipboard.")
+    }
+</script>
 
 {% endblock %}
