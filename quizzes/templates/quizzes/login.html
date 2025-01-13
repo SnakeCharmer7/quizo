@@ -2,12 +2,15 @@
 
 {% block content %}
 
-<h2>Log in</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Log in</button>
-</form>
-<p>Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+<div class="form-signin w-100 m-auto border p-3" style="width: 100%; max-width: 360px;">
+    <h1 class="h2 mb-3 fw-normal text-center">Login</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100 py-2">Log in</button>
+    </form>
+    <p class="mt-5 mb-3 text-body-secondary">Don't have an account? 
+    <a href="{% url 'register' %}" style="text-decoration: none;">Sign up</a></p>
+</div>
 
 {% endblock %}

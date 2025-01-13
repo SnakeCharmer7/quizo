@@ -1,10 +1,31 @@
 {% extends 'quizzes/base.html' %}
+{% load custom_filters %}
 
 {% block content %}
-<h1>Quiz Results: {{ quiz.title }}</h1>
-
-<p><strong>Score:</strong> {{ score }}/{{ total_questions }}</p>
-<p><strong>Percentage:</strong> {{ percentage|floatformat:2 }}%</p>
-
-<a href="{% url 'quiz_list' %}">Back to Quizzes</a>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center">
+                    <h2 class="card-title text-primary mb-3">Quiz Results</h2>
+                    <h4 class="mb-4">{{ quiz.title }}</h4>
+                    <p class="fs-5">
+                        <strong>Score:</strong> 
+                        <span class="badge bg-info text-dark fs-6">{{ score }}/{{ total_questions }}</span>
+                    </p>
+                    <p class="fs-5">
+                        <strong>Percentage:</strong> 
+                        <span class="badge {{ percentage|floatformat:2|css_class_for_percentage }} fs-6">
+                            {{ percentage|floatformat:2 }}%
+                        </span>
+                    </p>
+                    <div class="mt-4">
+                        <a href="{% url 'quiz_list' %}" class="btn btn-outline-primary">Back to Quizzes</a>
+                        <a href="{% url 'quiz_solve' quiz.unique_link %}" class="btn btn-primary ms-2">Retry Quiz</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'quizo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'SnakeCharmer7$default',
-        'USER': 'SnakeCharmer7',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quizo',
+        'USER': 'postgres',
         'PASSWORD': '3.14159265',
-        'HOST': 'SnakeCharmer7.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

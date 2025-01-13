@@ -2,12 +2,15 @@
 
 {% block content %}
 
-<h2>Create a new account</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
-</form>
-<p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+<div class="form-signin w-100 m-auto border p-3" style="width: 100%; max-width: 400px;">
+    <h2 class="h2 mb-3 fw-normal text-center">Create a new account</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100 py-2">Sign up</button>
+    </form>
+    <p class="mt-5 mb-3 text-body-secondary">Already have an account? 
+    <a href="{% url 'login' %}" style="text-decoration: none;">Log in</a></p>
+</div>
 
 {% endblock %}

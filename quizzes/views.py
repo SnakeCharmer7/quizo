@@ -2,12 +2,11 @@ from django.views import View, generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import UserCreationForm
 from django.forms import formset_factory
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Quiz, Question, Answer, QuizResult
-from .forms import QuizForm, QuestionForm, AnswerForm
+from .models import Category, Quiz, Question, Answer, QuizResult
+from .forms import QuizForm, QuestionForm, AnswerForm, CustomUserCreationForm
 
 
 class QuizListView(generic.ListView):
@@ -18,6 +17,11 @@ class QuizListView(generic.ListView):
     def get_queryset(self):
         user = self.request.user.id
         return Quiz.objects.filter(Q(is_public=True) | Q(author=user))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class QuizSolveView(LoginRequiredMixin, generic.DetailView):
@@ -158,4 +162,4 @@ class QuizDeleteView(LoginRequiredMixin, generic.DeleteView):
 class SingUpView(generic.CreateView):
     template_name = "quizzes/register.html"
     success_url = reverse_lazy('login')
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
