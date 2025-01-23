@@ -2,11 +2,12 @@ from django.views import View, generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import formset_factory
+from django.forms import modelform_factory, formset_factory
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Category, Quiz, Question, Answer, QuizResult
 from .forms import QuizForm, QuestionForm, AnswerForm, CustomUserCreationForm
+from django.http import JsonResponse, HttpResponse
 
 
 class QuizListView(generic.ListView):
@@ -16,12 +17,25 @@ class QuizListView(generic.ListView):
 
     def get_queryset(self):
         user = self.request.user.id
-        return Quiz.objects.filter(Q(is_public=True) | Q(author=user))
+        category_id = self.request.GET.get('category')
+
+        queryset = Quiz.objects.filter(Q(is_public=True) | Q(author=user))
+
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         return context
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get('HX-Request'):
+            return render(self.request, 'quizzes/partials/quiz_list_partial.html', context, **response_kwargs)
+
+        return super().render_to_response(context, **response_kwargs)
 
 
 class QuizSolveView(LoginRequiredMixin, generic.DetailView):
@@ -63,11 +77,10 @@ class QuizSubmitView(View):
             user_answer_ids = request.POST.getlist(f'question-{question.id}')
             correct_answers = question.answers.filter(is_correct=True)
 
-            # Sprawdź, czy wszystkie poprawne odpowiedzi zostały wybrane
             correct_ids = set(correct_answers.values_list('id', flat=True))
-            user_ids = set(map(int, user_answer_ids))  # Zamień odpowiedzi użytkownika na zestaw int
+            user_ids = set(map(int, user_answer_ids))
 
-            if user_ids == correct_ids:  # Sprawdź, czy odpowiedzi użytkownika są poprawne
+            if user_ids == correct_ids:
                 score += 1
 
         QuizResult.objects.create(
@@ -108,7 +121,7 @@ class QuestionAddView(LoginRequiredMixin, View):
             'answer_forms': answer_formset,
             'form_count': len(answer_formset),
         })
-
+    
     def post(self, request, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
         question_form = QuestionForm(request.POST, request.FILES)
@@ -152,11 +165,7 @@ class QuizUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class QuizDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Quiz
-    template_name = "quizzes/quiz_confirm_delete.html"
     success_url = reverse_lazy('quiz_list')
-
-    def get_queryset(self):
-        return Quiz.objects.filter(author=self.request.user)
 
 
 class SingUpView(generic.CreateView):
